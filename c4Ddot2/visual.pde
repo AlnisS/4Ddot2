@@ -100,8 +100,12 @@ class Line {
   }
 
   void prepare() {
+    PVector offset = new PVector(this.offset.x, this.offset.y, this.offset.z);
+    PVector nudge = PVector.mult(offset, .1);
     drawOrigin = new PVector(origin.x, origin.y, origin.z);
-    drawEnd = PVector.add(drawOrigin, new PVector(offset.x, offset.y, offset.z));
+    if (!w)
+      drawOrigin.add(nudge);
+    drawEnd = PVector.add(drawOrigin, offset).sub(nudge).sub(nudge);
     midpoint = PVector.add(drawOrigin, drawEnd).mult(.5);
     if (w)
       distance = -modelZ(drawOrigin);
@@ -111,12 +115,14 @@ class Line {
 
   void show() {
     noFill();
-    float shade = 255 - map(distance, 150, 2300, 0, 255); 
+    float shade = map(distance, 150, 2300, 255, brightness);
+    float ishade = map(distance, 150, 2300, 0, brightness);
+    
     if (distance < min)
       min = distance;
     if (distance > max)
       max = distance;
-    println(min, max);
+    //println(min, max);
     
     if (w) {
       stroke(shade);
@@ -125,9 +131,9 @@ class Line {
       float es = 50 + 25 * origin.w;
       int w = round(origin.w);
       if (w == 0)
-        stroke(shade, shade, 0);
+        stroke(shade, shade, ishade);
       if (w == 1)
-        stroke(0, shade, shade);
+        stroke(ishade, shade, shade);
 
       pushMatrix();
       resetMatrix();
@@ -136,15 +142,15 @@ class Line {
       ellipse(epos.x, epos.y, es, es);
       popMatrix();
     } else {
-      strokeWeight(6 * (origin.w + 1));
+      strokeWeight(6 + 12 * (origin.w));
       int w = round(origin.w);
       stroke(0, 0, 0);
-      if (w == 0)
-        stroke(shade, 0, 0);
-      if (w == 1)
-        stroke(0, shade, 0);
       if (w == 2)
-        stroke(0, 0, shade);
+        stroke(shade, ishade, ishade);
+      if (w == 1)
+        stroke(ishade, shade, ishade);
+      if (w == 0)
+        stroke(ishade, ishade, shade);
       
       PVector start = modelXYZ(drawOrigin);
       PVector end = modelXYZ(drawEnd);
