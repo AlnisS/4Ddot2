@@ -3,8 +3,8 @@ import java.util.*;
 List<Line> linesToDraw;
 
 void drawBoard(BoardManager bm) {
-  translate(450, 450, -1000);  
-  scale(300);
+  translate(width / 2, height / 2, -1200);  
+  scale(600);
   rotateX( -(mouseY - height / 2.) / height * 3 * HALF_PI);
   rotateY(mouseX / 160.);
   translate(-1, -1, -1);
@@ -104,32 +104,61 @@ class Line {
     drawEnd = PVector.add(drawOrigin, new PVector(offset.x, offset.y, offset.z));
     midpoint = PVector.add(drawOrigin, drawEnd).mult(.5);
     if (w)
-      distance = -modelZ(drawOrigin);//distance(drawOrigin);
+      distance = -modelZ(drawOrigin);
     else
-      distance = -modelZ(midpoint);//distance(PVector.add(drawOrigin, drawEnd).mult(.5));
+      distance = -modelZ(midpoint);
   }
 
   void show() {
     noFill();
-    float shade = map(distance, 450, 1600, 0, 255); 
+    float shade = map(distance, 150, 2300, 0, 255); 
     stroke(shade);
+    if (distance < min)
+      min = distance;
+    if (distance > max)
+      max = distance;
+    println(min, max);
+    
     if (w) {
       stroke(shade);
       strokeWeight(3);
       PVector epos = modelXYZ(drawOrigin);
+      float es = 50 * (origin.w + 1);
 
       pushMatrix();
       resetMatrix();
       camera();
       translate(0, 0, epos.z);
-      ellipse(epos.x, epos.y, 50, 50);
+      ellipse(epos.x, epos.y, es, es);
       popMatrix();
     } else {
-      strokeWeight(1 / 100.);
-      line(drawOrigin.x, drawOrigin.y, drawOrigin.z, drawEnd.x, drawEnd.y, drawEnd.z);
+      //strokeWeight(1 / 100. * (origin.w + 1));
+      strokeWeight(6 * (origin.w + 1));
+      int w = round(origin.w);
+      stroke(0, 0, 0);
+      if (w == 0)
+        stroke(255, shade, shade);
+      if (w == 1)
+        stroke(shade, 255, shade);
+      if (w == 2)
+        stroke(shade, shade, 255);
+      
+      PVector start = modelXYZ(drawOrigin);
+      PVector end = modelXYZ(drawEnd);
+      start.z = start.z;
+      end.z = end.z;
+      start.z -= origin.w * .03;
+      end.z -= origin.w * .03;
+      pushMatrix();
+      resetMatrix();
+      camera();
+      line(start.x, start.y, start.z, end.x, end.y, end.z);
+      //line(drawOrigin.x, drawOrigin.y, drawOrigin.z, drawEnd.x, drawEnd.y, drawEnd.z);
+      popMatrix();
     }
   }
 }
+float min = 2000, max = 0;
 
 class Point {
   float x, y, z, w;
