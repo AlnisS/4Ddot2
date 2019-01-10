@@ -6,7 +6,7 @@ void setup() {
   manager = new BoardManager(f_x, f_y, f_z, f_w);
 }
 void draw() {
-  background(255);
+  background(0);
   hint(DISABLE_DEPTH_TEST);
   drawBoard(manager);
 }

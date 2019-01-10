@@ -111,8 +111,7 @@ class Line {
 
   void show() {
     noFill();
-    float shade = map(distance, 150, 2300, 0, 255); 
-    stroke(shade);
+    float shade = 255 - map(distance, 150, 2300, 0, 255); 
     if (distance < min)
       min = distance;
     if (distance > max)
@@ -126,9 +125,9 @@ class Line {
       float es = 50 + 25 * origin.w;
       int w = round(origin.w);
       if (w == 0)
-        stroke(240, 240, shade);
+        stroke(shade, shade, 0);
       if (w == 1)
-        stroke(shade, 240, 240);
+        stroke(0, shade, shade);
 
       pushMatrix();
       resetMatrix();
@@ -141,11 +140,11 @@ class Line {
       int w = round(origin.w);
       stroke(0, 0, 0);
       if (w == 0)
-        stroke(255, shade, shade);
+        stroke(shade, 0, 0);
       if (w == 1)
-        stroke(shade, 255, shade);
+        stroke(0, shade, 0);
       if (w == 2)
-        stroke(shade, shade, 255);
+        stroke(0, 0, shade);
       
       PVector start = modelXYZ(drawOrigin);
       PVector end = modelXYZ(drawEnd);
@@ -157,7 +156,6 @@ class Line {
       resetMatrix();
       camera();
       line(start.x, start.y, start.z, end.x, end.y, end.z);
-      //line(drawOrigin.x, drawOrigin.y, drawOrigin.z, drawEnd.x, drawEnd.y, drawEnd.z);
       popMatrix();
     }
   }
