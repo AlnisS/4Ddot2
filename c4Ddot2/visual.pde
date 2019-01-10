@@ -18,7 +18,7 @@ void drawBoard(BoardManager bm) {
   for (Line line : linesToDraw) {
     line.prepare();
   }
-
+  linesToDraw.sort(new LineDistanceComparator());
   while (linesToDraw.size() != 0) {
     linesToDraw.get(0).show();
     linesToDraw.remove(0);
@@ -121,9 +121,14 @@ class Line {
     
     if (w) {
       stroke(shade);
-      strokeWeight(3);
+      strokeWeight(6);
       PVector epos = modelXYZ(drawOrigin);
-      float es = 50 * (origin.w + 1);
+      float es = 50 + 25 * origin.w;
+      int w = round(origin.w);
+      if (w == 0)
+        stroke(240, 240, shade);
+      if (w == 1)
+        stroke(shade, 240, 240);
 
       pushMatrix();
       resetMatrix();
@@ -132,7 +137,6 @@ class Line {
       ellipse(epos.x, epos.y, es, es);
       popMatrix();
     } else {
-      //strokeWeight(1 / 100. * (origin.w + 1));
       strokeWeight(6 * (origin.w + 1));
       int w = round(origin.w);
       stroke(0, 0, 0);
@@ -179,6 +183,14 @@ class LineDistanceComparator implements Comparator<Line> {
     Float bd = b.distance;
     if (ad == null || bd == null)
       return 0;
+    if (abs(ad - bd) < .01) {
+      if (abs(a.origin.w - b.origin.w) < .01)
+        return 0;
+      if (a.origin.w < b.origin.w)
+        return 1;
+      if (a.origin.w > b.origin.w)
+        return -1;
+    } 
     if (ad < bd)
       return 1;
     if (ad > bd)

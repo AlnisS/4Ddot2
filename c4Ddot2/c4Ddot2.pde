@@ -7,5 +7,6 @@ void setup() {
 }
 void draw() {
   background(255);
+  hint(DISABLE_DEPTH_TEST);
   drawBoard(manager);
 }
