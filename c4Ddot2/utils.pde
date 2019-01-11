@@ -9,7 +9,14 @@ DirectionPair[] directionPairs =
 Direction[] positiveDirections = 
     {Direction.XP, Direction.YP, Direction.ZP, Direction.WP};
 
+Direction[] nonWDirections = 
+    {Direction.XN, Direction.XP, Direction.YN, Direction.YP, Direction.ZN, Direction.ZP};
+
 enum Direction {XN, XP, YN, YP, ZN, ZP, WN, WP}
+
+float mod(float a, float b) {
+  return ((a % b) + b) % b;
+}
 
 Direction getDirection(Node a, Node b) {
   int delta = abs(a.x - b.x) + abs(a.y - b.y) + abs(a.z - b.z) + abs(a.w - b.w);

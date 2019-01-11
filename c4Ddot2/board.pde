@@ -27,6 +27,10 @@ class BoardManager {
     return nodes[x][y][z][w];
   }
   
+  Node getNode(Point p) {
+    return  getNode(round(p.x), round(p.y), round(p.z), round(p.w));
+  }
+  
   void connect(Node a, Node b) {
     new Connection(a, b);
   }
